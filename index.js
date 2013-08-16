@@ -2,11 +2,12 @@
   var fs = require("fs");
   var path = require("path");
   var uuid = require("node-uuid");
+  var existsSync = fs.existsSync || path.existsSync;
 
   function loadDb() {
     var filePath = path.join(__dirname,"transactions.json");
     var db;
-    if (fs.existsSync(filePath)) {
+    if (existsSync(filePath)) {
       var contents = fs.readFileSync(filePath);
       db = JSON.parse(contents);
     } else {
