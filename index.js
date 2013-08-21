@@ -150,11 +150,36 @@
       if (trans.blocking && (!trans.hasOwnProperty("decision") || trans.decision === "pending")) {
         trans.decision = decision;
         saveTransactions(db);
+
+        if (trans.hasOwnProperty("callback")) {
+          var cb = trans.callback + trans.decision + "/" + trans.id;
+          var http = require('http');
+          var url = require('url');
+          var parsed = url.parse(cb);
+
+          // Fire and forget callback authorisation.
+          http.get({ host: parsed.hostname, port: parsed.port, path: parsed.path }, function(resp) {}).on("error",function(e) { console.log("error during transaction callback: " + e.message); })
+        }
       }
     }
+  }
+
+  function clearTransactions() {
+    var db = loadDb();
+
+    for (var t in db) {
+      var trans = db[t];
+      if (trans.blocking === false || (trans.hasOwnProperty("decision") && trans.decision !== "pending")) {
+        // Keep all blocking notifications that have a pending decision.
+        delete db[t];
+      }
+    }
+
+    saveTransactions(db);
   }
 
   exports.loadTransactions = loadTransactions;
   exports.addTransaction = addTransaction;
   exports.respondTransaction = respondTransaction;
+  exports.clearTransactions = clearTransactions;
 })();
