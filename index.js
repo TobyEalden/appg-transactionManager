@@ -152,7 +152,8 @@
         saveTransactions(db);
 
         if (trans.hasOwnProperty("callback")) {
-          var cb = trans.callback + trans.decision + "/" + trans.id;
+          //var cb = trans.callback + trans.decision + "/" + trans.id;
+          var cb = trans.callback + "?" + "decision=" + trans.decision + "&transactionId=" + trans.id;
           var http = require('http');
           var url = require('url');
           var parsed = url.parse(cb);
