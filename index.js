@@ -168,6 +168,8 @@
           var url = require('url');
           var parsed = url.parse(cb);
 
+          console.log("--- calling back to: " + cb);
+
           // Fire and forget callback authorisation.
           http.get({ host: parsed.hostname, port: parsed.port, path: parsed.path }, function(resp) {}).on("error",function(e) { console.log("error during transaction callback: " + e.message); })
         }
