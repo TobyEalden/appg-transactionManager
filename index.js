@@ -120,6 +120,13 @@
       currency = trans.currency;
     }
 
+    var transCallback;
+    if (blocking && !trans.hasOwnProperty("callback")) {
+      err = "callback field required for blocking requests";
+    } else {
+      transCallback = trans.callback;
+    }
+
     if (err) {
       callback(err);
     } else {
@@ -135,6 +142,9 @@
         currency: currency,
         blocking: blocking
       };
+      if (blocking) {
+        newTrans.callback = transCallback;
+      }
       var db = loadDb();
       db[newTrans.id] = newTrans;
       saveTransactions(db);
